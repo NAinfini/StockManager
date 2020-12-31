@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "StockManager": {
+      "commandName": "Project",
+      "remoteDebugEnabled": false,
+      "sqlDebugging": false,
+      "nativeDebugging": false
+    }
+  }
+}
