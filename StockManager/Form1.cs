@@ -12,19 +12,33 @@ namespace StockManager
 
         private IconButton currentBtn;
         private Panel leftBorderBtn;
+        private Form activeForm = null;
+
         public Form1()
         {
             InitializeComponent();
+            this.ControlBox = false;
+            this.Text = string.Empty;
+            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
             leftBorderBtn = new Panel();
             leftBorderBtn.Size = new Size(7, 50);
             MainFormSidePanel.Controls.Add(leftBorderBtn);
             setTexts();
         }
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
-        }
+
+
+
+
+
+
+
+
+
         //manage language of software
 
         private void setTexts()
@@ -62,8 +76,6 @@ namespace StockManager
         }
 
         #endregion
-
-        private Form activeForm = null;
 
         // open side panel 
 
@@ -125,17 +137,14 @@ namespace StockManager
         #region window property settings
 
 
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
-        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+
 
 
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
-            SendMessage(this.Handle, 0x112, 0xf012, 0);
+            SendMessage(this.Handle, 0x112, 0xf012, 0); 
         }
 
         private void exitButton_Click(object sender, EventArgs e)
@@ -161,5 +170,14 @@ namespace StockManager
         }
 
         #endregion
+
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Maximized)
+                FormBorderStyle = FormBorderStyle.None;
+            else
+                FormBorderStyle = FormBorderStyle.Sizable;
+        }
     }
 }

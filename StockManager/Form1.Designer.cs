@@ -36,11 +36,10 @@ namespace StockManager
             this.searchItemBtn = new FontAwesome.Sharp.IconButton();
             this.ItemsBtn = new FontAwesome.Sharp.IconButton();
             this.LogoPanel = new System.Windows.Forms.Panel();
-            this.sideMenuTop = new System.Windows.Forms.Panel();
             this.panelChildForm = new System.Windows.Forms.Panel();
             this.topPanel = new System.Windows.Forms.Panel();
             this.minimize = new FontAwesome.Sharp.IconButton();
-            this.maxmazeButton = new FontAwesome.Sharp.IconButton();
+            this.maximizeButton = new FontAwesome.Sharp.IconButton();
             this.exitButton = new FontAwesome.Sharp.IconButton();
             this.MainFormSidePanel.SuspendLayout();
             this.topPanel.SuspendLayout();
@@ -55,12 +54,11 @@ namespace StockManager
             this.MainFormSidePanel.Controls.Add(this.searchItemBtn);
             this.MainFormSidePanel.Controls.Add(this.ItemsBtn);
             this.MainFormSidePanel.Controls.Add(this.LogoPanel);
-            this.MainFormSidePanel.Controls.Add(this.sideMenuTop);
             this.MainFormSidePanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.MainFormSidePanel.ForeColor = System.Drawing.Color.Black;
-            this.MainFormSidePanel.Location = new System.Drawing.Point(0, 0);
+            this.MainFormSidePanel.Location = new System.Drawing.Point(0, 34);
             this.MainFormSidePanel.Name = "MainFormSidePanel";
-            this.MainFormSidePanel.Size = new System.Drawing.Size(250, 518);
+            this.MainFormSidePanel.Size = new System.Drawing.Size(250, 484);
             this.MainFormSidePanel.TabIndex = 0;
             // 
             // helpBtn
@@ -76,7 +74,7 @@ namespace StockManager
             this.helpBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.helpBtn.IconSize = 32;
             this.helpBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.helpBtn.Location = new System.Drawing.Point(0, 254);
+            this.helpBtn.Location = new System.Drawing.Point(0, 220);
             this.helpBtn.Name = "helpBtn";
             this.helpBtn.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
             this.helpBtn.Size = new System.Drawing.Size(250, 50);
@@ -100,7 +98,7 @@ namespace StockManager
             this.settingsBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.settingsBtn.IconSize = 32;
             this.settingsBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.settingsBtn.Location = new System.Drawing.Point(0, 204);
+            this.settingsBtn.Location = new System.Drawing.Point(0, 170);
             this.settingsBtn.Name = "settingsBtn";
             this.settingsBtn.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
             this.settingsBtn.Size = new System.Drawing.Size(250, 50);
@@ -125,7 +123,7 @@ namespace StockManager
             this.searchItemBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.searchItemBtn.IconSize = 32;
             this.searchItemBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.searchItemBtn.Location = new System.Drawing.Point(0, 154);
+            this.searchItemBtn.Location = new System.Drawing.Point(0, 120);
             this.searchItemBtn.Name = "searchItemBtn";
             this.searchItemBtn.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
             this.searchItemBtn.Size = new System.Drawing.Size(250, 50);
@@ -149,7 +147,7 @@ namespace StockManager
             this.ItemsBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.ItemsBtn.IconSize = 32;
             this.ItemsBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.ItemsBtn.Location = new System.Drawing.Point(0, 104);
+            this.ItemsBtn.Location = new System.Drawing.Point(0, 70);
             this.ItemsBtn.Name = "ItemsBtn";
             this.ItemsBtn.Padding = new System.Windows.Forms.Padding(25, 0, 0, 0);
             this.ItemsBtn.Size = new System.Drawing.Size(250, 50);
@@ -166,19 +164,10 @@ namespace StockManager
             this.LogoPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("LogoPanel.BackgroundImage")));
             this.LogoPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.LogoPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.LogoPanel.Location = new System.Drawing.Point(0, 34);
+            this.LogoPanel.Location = new System.Drawing.Point(0, 0);
             this.LogoPanel.Name = "LogoPanel";
             this.LogoPanel.Size = new System.Drawing.Size(250, 70);
             this.LogoPanel.TabIndex = 0;
-            // 
-            // sideMenuTop
-            // 
-            this.sideMenuTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(1)))), ((int)(((byte)(64)))));
-            this.sideMenuTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sideMenuTop.Location = new System.Drawing.Point(0, 0);
-            this.sideMenuTop.Name = "sideMenuTop";
-            this.sideMenuTop.Size = new System.Drawing.Size(250, 34);
-            this.sideMenuTop.TabIndex = 12;
             // 
             // panelChildForm
             // 
@@ -193,12 +182,12 @@ namespace StockManager
             // 
             this.topPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(1)))), ((int)(((byte)(64)))));
             this.topPanel.Controls.Add(this.minimize);
-            this.topPanel.Controls.Add(this.maxmazeButton);
+            this.topPanel.Controls.Add(this.maximizeButton);
             this.topPanel.Controls.Add(this.exitButton);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.topPanel.Location = new System.Drawing.Point(250, 0);
+            this.topPanel.Location = new System.Drawing.Point(0, 0);
             this.topPanel.Name = "topPanel";
-            this.topPanel.Size = new System.Drawing.Size(741, 34);
+            this.topPanel.Size = new System.Drawing.Size(991, 34);
             this.topPanel.TabIndex = 2;
             this.topPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
             // 
@@ -211,7 +200,7 @@ namespace StockManager
             this.minimize.IconColor = System.Drawing.Color.Gray;
             this.minimize.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.minimize.IconSize = 20;
-            this.minimize.Location = new System.Drawing.Point(673, 0);
+            this.minimize.Location = new System.Drawing.Point(923, 0);
             this.minimize.Name = "minimize";
             this.minimize.Size = new System.Drawing.Size(25, 25);
             this.minimize.TabIndex = 2;
@@ -219,21 +208,21 @@ namespace StockManager
             this.minimize.UseVisualStyleBackColor = true;
             this.minimize.Click += new System.EventHandler(this.minimize_Click);
             // 
-            // maxmazeButton
+            // maximizeButton
             // 
-            this.maxmazeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.maxmazeButton.FlatAppearance.BorderSize = 0;
-            this.maxmazeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.maxmazeButton.IconChar = FontAwesome.Sharp.IconChar.WindowMaximize;
-            this.maxmazeButton.IconColor = System.Drawing.Color.Gray;
-            this.maxmazeButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.maxmazeButton.IconSize = 20;
-            this.maxmazeButton.Location = new System.Drawing.Point(695, 0);
-            this.maxmazeButton.Name = "maxmazeButton";
-            this.maxmazeButton.Size = new System.Drawing.Size(25, 25);
-            this.maxmazeButton.TabIndex = 1;
-            this.maxmazeButton.UseVisualStyleBackColor = true;
-            this.maxmazeButton.Click += new System.EventHandler(this.maxmazeButton_Click);
+            this.maximizeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.maximizeButton.FlatAppearance.BorderSize = 0;
+            this.maximizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.maximizeButton.IconChar = FontAwesome.Sharp.IconChar.WindowMaximize;
+            this.maximizeButton.IconColor = System.Drawing.Color.Gray;
+            this.maximizeButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.maximizeButton.IconSize = 20;
+            this.maximizeButton.Location = new System.Drawing.Point(945, 0);
+            this.maximizeButton.Name = "maximizeButton";
+            this.maximizeButton.Size = new System.Drawing.Size(25, 25);
+            this.maximizeButton.TabIndex = 1;
+            this.maximizeButton.UseVisualStyleBackColor = true;
+            this.maximizeButton.Click += new System.EventHandler(this.maxmazeButton_Click);
             // 
             // exitButton
             // 
@@ -244,7 +233,7 @@ namespace StockManager
             this.exitButton.IconColor = System.Drawing.Color.Gray;
             this.exitButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.exitButton.IconSize = 25;
-            this.exitButton.Location = new System.Drawing.Point(716, 0);
+            this.exitButton.Location = new System.Drawing.Point(966, 0);
             this.exitButton.Name = "exitButton";
             this.exitButton.Size = new System.Drawing.Size(25, 25);
             this.exitButton.TabIndex = 0;
@@ -256,16 +245,18 @@ namespace StockManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(1)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(991, 518);
+            this.ControlBox = false;
             this.Controls.Add(this.panelChildForm);
-            this.Controls.Add(this.topPanel);
             this.Controls.Add(this.MainFormSidePanel);
+            this.Controls.Add(this.topPanel);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.ImeMode = System.Windows.Forms.ImeMode.On;
             this.Name = "Form1";
-            this.Text = "Stock Manager";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.MainFormSidePanel.ResumeLayout(false);
             this.topPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -283,9 +274,8 @@ namespace StockManager
         private FontAwesome.Sharp.IconButton searchItemBtn;
         private FontAwesome.Sharp.IconButton ItemsBtn;
         private FontAwesome.Sharp.IconButton minimize;
-        private FontAwesome.Sharp.IconButton maxmazeButton;
+        private FontAwesome.Sharp.IconButton maximizeButton;
         private FontAwesome.Sharp.IconButton exitButton;
-        private System.Windows.Forms.Panel sideMenuTop;
     }
 }
 

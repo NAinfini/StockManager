@@ -54,15 +54,25 @@ namespace StockManager
             items.Add(value);
         }
 
-
+        public void swap(int index1,int index2)
+        {
+            Type tempType = typeOfField[index1];
+            typeOfField[index1] = typeOfField[index2];
+            typeOfField[index2] = tempType;
+            string tempName = nameOfField[index1];
+            nameOfField[index1] = nameOfField[index2];
+            nameOfField[index2] = tempName;
+            foreach(item itemInList in items)
+            {
+                itemInList.swap(index1, index2);
+            }
+            
+        }
         public void loadFile(string fileName)
         {
             try
             {
-
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "\\test.txt");
-                string filepath = @"C:\Users\NA infini\source\repos\StockManager\test.txt";
-                string[] lines = File.ReadAllLines(path);
+                string[] lines = File.ReadAllLines(fileName);
                 string[] types = lines[0].Replace(" ", "").Split(',');
                 string[] names = lines[1].Replace(" ", "").Split(',');
                 if (names.Length != types.Length)
@@ -70,11 +80,13 @@ namespace StockManager
                     return;
                     //something is wrong with save file number of fields doesnt match
                 }
+                foreach(string type in types)
+                {
+                    typeOfField.Add(Type.GetType(type));
+                }
                 foreach (string itemName in names)
                 {
-                    Type myType = Type.GetType(types[Array.FindIndex(names, x => x.Contains(itemName))]);
                     nameOfField.Add(itemName);
-                    typeOfField.Add(myType);
                 }
                 for (int i = 2; i < lines.Length; i++)
                 {
@@ -82,14 +94,18 @@ namespace StockManager
                     string[] itemValues = lines[i].Replace(" ", "").Split(',');
                     for(int j = 0; j < itemValues.Length; j++)
                     {
-                        if (types[j] == "string")
+                        if (types[j].Equals("System.String"))
                         {
                             tempItem.addField(itemValues[j]);
-                        }else if(types[j] == "int")
+                        }else if(types[j].Equals("System.Int32"))
                         {
                             tempItem.addField(Int32.Parse(itemValues[j]));
+                        }else if (types[j].Equals("System.Double"))
+                        {
+                            tempItem.addField(Convert.ToDouble(itemValues[j]));
                         }
-                        
+
+
                     }
                     items.Add(tempItem);
                 }
@@ -103,9 +119,37 @@ namespace StockManager
             }
             
         }
-        public void saveFile(string name)
-        {
 
+        public string toString()
+        {
+            try
+            {
+                string result = "";
+
+                foreach(Type temp in typeOfField)
+                {
+                    result = result + temp.ToString() + ",";
+                }
+                result = result.Remove(result.Length - 1);
+                result += "\n";
+                foreach (string nameOfItem in nameOfField)
+                {
+                    result = result + nameOfItem + ",";
+                }
+                result = result.Remove(result.Length - 1);
+                result += "\n";
+                foreach (item idItem in items)
+                {
+                    result = result + idItem.toString() + "\n";
+                }
+                return result;
+
+            }
+            catch (Exception e)
+            {
+                return "something went wrong" + e.ToString();
+            }
+            
         }
     }
 
