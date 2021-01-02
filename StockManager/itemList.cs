@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -25,35 +26,43 @@ namespace StockManager
         {
             return items;
         }
-        public string addName(Type type, string name)
+        public void addName(Type type, string name)
         {
             if (nameOfField.Count != 0)
             {
                 if (nameOfField.Contains(name))
                 {
-                    return "name exists";
+                    throw new DuplicateNameException(defaultLanguage.sameName);
                 }
             }
             typeOfField.Add(type);
             nameOfField.Add(name);
-            return "added";
 
         }
-        public string removeName(string name)
+
+        //remove an item based on its name
+        public void removeName(string name)
         {
             if (!nameOfField.Contains(name))
             {
-                return "name of field doesnt exist";
+                throw new ArgumentNullException("ItemDoesntExist");
+            }
+            foreach (item tempItem in items)
+            {
+                tempItem.removeField(nameOfField.IndexOf(name));
             }
             typeOfField.RemoveAt(nameOfField.IndexOf(name));
             nameOfField.Remove(name);
-            return "removed";
         }
+
+        //add item to the end of the list
         public void addItem(item value)
         {
             items.Add(value);
         }
 
+
+        //spaws the positon of any two names. also for all items
         public void swap(int index1,int index2)
         {
             Type tempType = typeOfField[index1];
@@ -68,6 +77,8 @@ namespace StockManager
             }
             
         }
+
+        //load from txt file to itemlist
         public void loadFile(string fileName)
         {
             try
@@ -80,32 +91,21 @@ namespace StockManager
                     return;
                     //something is wrong with save file number of fields doesnt match
                 }
-                foreach(string type in types)
+                //loading into types and names
+                for(int i = 0; i < types.Length;i++)
                 {
-                    typeOfField.Add(Type.GetType(type));
+                    typeOfField.Add(Type.GetType(types[i]));
+                    nameOfField.Add(names[i]);
                 }
-                foreach (string itemName in names)
-                {
-                    nameOfField.Add(itemName);
-                }
+                //loading items aiwth their fields then into list
                 for (int i = 2; i < lines.Length; i++)
                 {
                     item tempItem = new item();
                     string[] itemValues = lines[i].Replace(" ", "").Split(',');
                     for(int j = 0; j < itemValues.Length; j++)
                     {
-                        if (types[j].Equals("System.String"))
-                        {
-                            tempItem.addField(itemValues[j]);
-                        }else if(types[j].Equals("System.Int32"))
-                        {
-                            tempItem.addField(Int32.Parse(itemValues[j]));
-                        }else if (types[j].Equals("System.Double"))
-                        {
-                            tempItem.addField(Convert.ToDouble(itemValues[j]));
-                        }
-
-
+                        dynamic value3 = Convert.ChangeType(itemValues[j], Type.GetType(types[j]));
+                        tempItem.addField(value3);
                     }
                     items.Add(tempItem);
                 }
@@ -120,6 +120,8 @@ namespace StockManager
             
         }
 
+
+        //simple method to turn itemlist into a stin
         public string toString()
         {
             try

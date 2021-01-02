@@ -52,6 +52,9 @@ namespace StockManager
             this.ItemGrid.RowTemplate.Height = 25;
             this.ItemGrid.Size = new System.Drawing.Size(734, 409);
             this.ItemGrid.TabIndex = 0;
+            this.ItemGrid.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.ItemGrid_CellBeginEdit);
+            this.ItemGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.ItemGrid_CellEndEdit);
+            this.ItemGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ItemGrid_KeyDown);
             // 
             // itemsTopPanel
             // 

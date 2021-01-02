@@ -51,11 +51,11 @@ namespace StockManager
                 return "something went wrong " + e.ToString();
             }
         }
-        public string removeField(int value)
+        public string removeField(int index)
         {
             try
             {
-                allFields.Remove(value);
+                allFields.RemoveAt(index);
                 return "removed";
             }catch(Exception e)
             {
@@ -74,6 +74,22 @@ namespace StockManager
                 return "something went wrong " + e.ToString();
             }
         }
+
+
+        public void set(int index, int value)
+        {
+            allFields[index] = value;
+        }
+        public void set(int index, string value)
+        {
+            allFields[index] = value;
+        }
+        public void set(int index, double value)
+        {
+            allFields[index] = value;
+        }
+
+
         public void swap(int index1,int index2)
         {
             Object tempObj = allFields[index1];
