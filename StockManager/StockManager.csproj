@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Font.Awesome" Version="5.15.1" />
+    <PackageReference Include="Blazor.ContextMenu" Version="1.9.0" />
     <PackageReference Include="FontAwesome.Sharp" Version="5.15.3" />
   </ItemGroup>
 

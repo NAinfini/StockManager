@@ -155,7 +155,8 @@ namespace StockManager
             //check if the inputs are correct
                 while (!flag)
                 {
-                    if (tempForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    DialogResult temp = tempForm.ShowDialog();
+                    if (temp == System.Windows.Forms.DialogResult.OK)
                     {
                         if (tempForm.nameGot.Equals(string.Empty))
                         {
@@ -169,6 +170,10 @@ namespace StockManager
                         {
                             flag = true;
                         }
+                    }else if(temp == System.Windows.Forms.DialogResult.Cancel)
+                    {
+                        flag = true;
+                        return;
                     }
                 }
                 //assign varibles and adding field to the list, datagrid
@@ -277,6 +282,14 @@ namespace StockManager
             beforeEdit = ItemGrid.CurrentCell.Value;
         }
 
+        private void itemGridMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
+        private void addItemMenu_Click(object sender, EventArgs e)
+        {
+            addItemBtn_Click(sender, e);
+        }
 
     }
 }

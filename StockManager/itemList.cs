@@ -13,6 +13,8 @@ namespace StockManager
         List<string> nameOfField = new List<string>();
         List<item> items = new List<item>();
 
+
+
         public itemList() { }
         public List<Type> getType()
         {

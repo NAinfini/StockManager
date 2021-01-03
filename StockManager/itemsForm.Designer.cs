@@ -29,13 +29,19 @@ namespace StockManager
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.ItemGrid = new System.Windows.Forms.DataGridView();
+            this.itemGridMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addItemMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.addFieldMemu = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteItemMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.itemsTopPanel = new System.Windows.Forms.TableLayoutPanel();
             this.addFieldBtn = new FontAwesome.Sharp.IconButton();
             this.addItemBtn = new FontAwesome.Sharp.IconButton();
             this.saveBtn = new FontAwesome.Sharp.IconButton();
             this.openFileBtn = new FontAwesome.Sharp.IconButton();
             ((System.ComponentModel.ISupportInitialize)(this.ItemGrid)).BeginInit();
+            this.itemGridMenu.SuspendLayout();
             this.itemsTopPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,15 +52,46 @@ namespace StockManager
             this.ItemGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.ItemGrid.BackgroundColor = System.Drawing.Color.White;
             this.ItemGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ItemGrid.ContextMenuStrip = this.itemGridMenu;
             this.ItemGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ItemGrid.Location = new System.Drawing.Point(0, 82);
             this.ItemGrid.Name = "ItemGrid";
             this.ItemGrid.RowTemplate.Height = 25;
-            this.ItemGrid.Size = new System.Drawing.Size(734, 409);
+            this.ItemGrid.Size = new System.Drawing.Size(725, 410);
             this.ItemGrid.TabIndex = 0;
             this.ItemGrid.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.ItemGrid_CellBeginEdit);
             this.ItemGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.ItemGrid_CellEndEdit);
             this.ItemGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ItemGrid_KeyDown);
+            // 
+            // itemGridMenu
+            // 
+            this.itemGridMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addItemMenu,
+            this.addFieldMemu,
+            this.deleteItemMenu});
+            this.itemGridMenu.Name = "contextMenuStrip1";
+            this.itemGridMenu.Size = new System.Drawing.Size(135, 70);
+            this.itemGridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.itemGridMenu_Opening);
+            // 
+            // addItemMenu
+            // 
+            this.addItemMenu.Name = "addItemMenu";
+            this.addItemMenu.Size = new System.Drawing.Size(134, 22);
+            this.addItemMenu.Text = "Add Item";
+            this.addItemMenu.Click += new System.EventHandler(this.addItemBtn_Click);
+            // 
+            // addFieldMemu
+            // 
+            this.addFieldMemu.Name = "addFieldMemu";
+            this.addFieldMemu.Size = new System.Drawing.Size(134, 22);
+            this.addFieldMemu.Text = "Add Field";
+            this.addFieldMemu.Click += new System.EventHandler(this.addFieldBtn_Click);
+            // 
+            // deleteItemMenu
+            // 
+            this.deleteItemMenu.Name = "deleteItemMenu";
+            this.deleteItemMenu.Size = new System.Drawing.Size(134, 22);
+            this.deleteItemMenu.Text = "Delete Item";
             // 
             // itemsTopPanel
             // 
@@ -72,7 +109,7 @@ namespace StockManager
             this.itemsTopPanel.Name = "itemsTopPanel";
             this.itemsTopPanel.RowCount = 1;
             this.itemsTopPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.itemsTopPanel.Size = new System.Drawing.Size(734, 82);
+            this.itemsTopPanel.Size = new System.Drawing.Size(725, 82);
             this.itemsTopPanel.TabIndex = 1;
             // 
             // addFieldBtn
@@ -80,7 +117,7 @@ namespace StockManager
             this.addFieldBtn.IconChar = FontAwesome.Sharp.IconChar.None;
             this.addFieldBtn.IconColor = System.Drawing.Color.Black;
             this.addFieldBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.addFieldBtn.Location = new System.Drawing.Point(186, 3);
+            this.addFieldBtn.Location = new System.Drawing.Point(184, 3);
             this.addFieldBtn.Name = "addFieldBtn";
             this.addFieldBtn.Size = new System.Drawing.Size(75, 23);
             this.addFieldBtn.TabIndex = 1;
@@ -106,7 +143,7 @@ namespace StockManager
             this.saveBtn.IconChar = FontAwesome.Sharp.IconChar.None;
             this.saveBtn.IconColor = System.Drawing.Color.Black;
             this.saveBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.saveBtn.Location = new System.Drawing.Point(369, 3);
+            this.saveBtn.Location = new System.Drawing.Point(365, 3);
             this.saveBtn.Name = "saveBtn";
             this.saveBtn.Size = new System.Drawing.Size(75, 23);
             this.saveBtn.TabIndex = 2;
@@ -119,7 +156,7 @@ namespace StockManager
             this.openFileBtn.IconChar = FontAwesome.Sharp.IconChar.None;
             this.openFileBtn.IconColor = System.Drawing.Color.Black;
             this.openFileBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.openFileBtn.Location = new System.Drawing.Point(552, 3);
+            this.openFileBtn.Location = new System.Drawing.Point(546, 3);
             this.openFileBtn.Name = "openFileBtn";
             this.openFileBtn.Size = new System.Drawing.Size(75, 23);
             this.openFileBtn.TabIndex = 3;
@@ -129,9 +166,11 @@ namespace StockManager
             // 
             // itemsForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(734, 491);
+            this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
+            this.ClientSize = new System.Drawing.Size(725, 492);
             this.Controls.Add(this.ItemGrid);
             this.Controls.Add(this.itemsTopPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -139,6 +178,7 @@ namespace StockManager
             this.Text = "itemsForm";
             this.Load += new System.EventHandler(this.itemsForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.ItemGrid)).EndInit();
+            this.itemGridMenu.ResumeLayout(false);
             this.itemsTopPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -152,5 +192,9 @@ namespace StockManager
         private FontAwesome.Sharp.IconButton addFieldBtn;
         private FontAwesome.Sharp.IconButton saveBtn;
         private FontAwesome.Sharp.IconButton openFileBtn;
+        private System.Windows.Forms.ContextMenuStrip itemGridMenu;
+        private System.Windows.Forms.ToolStripMenuItem addItemMenu;
+        private System.Windows.Forms.ToolStripMenuItem addFieldMemu;
+        private System.Windows.Forms.ToolStripMenuItem deleteItemMenu;
     }
 }

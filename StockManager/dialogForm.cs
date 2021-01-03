@@ -33,9 +33,6 @@ namespace StockManager
         {
             nameGot = dialogTextBox.Text.ToString();
             typeGot = dialogCombo.Text.ToString();
-            
-
-
         }
 
     }
