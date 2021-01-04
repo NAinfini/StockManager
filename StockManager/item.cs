@@ -107,6 +107,18 @@ namespace StockManager
             return result;
         }
 
+        public Boolean equal(item other)
+        {
+            for(int i=0;i < allFields.Count; i++)
+            {
+                if (!this.allFields[i].ToString().Equals(other.allFields[i].ToString()) )
+                {
+                    return false;
+                }
+            }
+            return true;
+
+        }
     }
 
 }

@@ -34,12 +34,15 @@ namespace StockManager
             this.itemGridMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addItemMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.addFieldMemu = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteItemMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeItemMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteFieldMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.itemsTopPanel = new System.Windows.Forms.TableLayoutPanel();
             this.addFieldBtn = new FontAwesome.Sharp.IconButton();
             this.addItemBtn = new FontAwesome.Sharp.IconButton();
             this.saveBtn = new FontAwesome.Sharp.IconButton();
             this.openFileBtn = new FontAwesome.Sharp.IconButton();
+            this.undoMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoMenu = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.ItemGrid)).BeginInit();
             this.itemGridMenu.SuspendLayout();
             this.itemsTopPanel.SuspendLayout();
@@ -61,6 +64,8 @@ namespace StockManager
             this.ItemGrid.TabIndex = 0;
             this.ItemGrid.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.ItemGrid_CellBeginEdit);
             this.ItemGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.ItemGrid_CellEndEdit);
+            this.ItemGrid.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ItemGrid_CellMouseUp);
+            this.ItemGrid.ColumnDisplayIndexChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.ItemGrid_ColumnDisplayIndexChanged);
             this.ItemGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ItemGrid_KeyDown);
             // 
             // itemGridMenu
@@ -68,10 +73,12 @@ namespace StockManager
             this.itemGridMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addItemMenu,
             this.addFieldMemu,
-            this.deleteItemMenu});
+            this.removeItemMenu,
+            this.deleteFieldMenu,
+            this.undoMenu,
+            this.redoMenu});
             this.itemGridMenu.Name = "contextMenuStrip1";
-            this.itemGridMenu.Size = new System.Drawing.Size(135, 70);
-            this.itemGridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.itemGridMenu_Opening);
+            this.itemGridMenu.Size = new System.Drawing.Size(135, 136);
             // 
             // addItemMenu
             // 
@@ -84,14 +91,21 @@ namespace StockManager
             // 
             this.addFieldMemu.Name = "addFieldMemu";
             this.addFieldMemu.Size = new System.Drawing.Size(134, 22);
-            this.addFieldMemu.Text = "Add Field";
+            this.addFieldMemu.Text = "Add field";
             this.addFieldMemu.Click += new System.EventHandler(this.addFieldBtn_Click);
             // 
-            // deleteItemMenu
+            // removeItemMenu
             // 
-            this.deleteItemMenu.Name = "deleteItemMenu";
-            this.deleteItemMenu.Size = new System.Drawing.Size(134, 22);
-            this.deleteItemMenu.Text = "Delete Item";
+            this.removeItemMenu.Name = "removeItemMenu";
+            this.removeItemMenu.Size = new System.Drawing.Size(134, 22);
+            this.removeItemMenu.Text = "Delete item";
+            this.removeItemMenu.Click += new System.EventHandler(this.removeItemBtn_Click);
+            // 
+            // deleteFieldMenu
+            // 
+            this.deleteFieldMenu.Name = "deleteFieldMenu";
+            this.deleteFieldMenu.Size = new System.Drawing.Size(134, 22);
+            this.deleteFieldMenu.Text = "Delete field";
             // 
             // itemsTopPanel
             // 
@@ -164,6 +178,18 @@ namespace StockManager
             this.openFileBtn.UseVisualStyleBackColor = true;
             this.openFileBtn.Click += new System.EventHandler(this.openFileBtn_Click);
             // 
+            // undoMenu
+            // 
+            this.undoMenu.Name = "undoMenu";
+            this.undoMenu.Size = new System.Drawing.Size(134, 22);
+            this.undoMenu.Text = "undo";
+            // 
+            // redoMenu
+            // 
+            this.redoMenu.Name = "redoMenu";
+            this.redoMenu.Size = new System.Drawing.Size(134, 22);
+            this.redoMenu.Text = "redo";
+            // 
             // itemsForm
             // 
             this.AllowDrop = true;
@@ -195,6 +221,9 @@ namespace StockManager
         private System.Windows.Forms.ContextMenuStrip itemGridMenu;
         private System.Windows.Forms.ToolStripMenuItem addItemMenu;
         private System.Windows.Forms.ToolStripMenuItem addFieldMemu;
-        private System.Windows.Forms.ToolStripMenuItem deleteItemMenu;
+        private System.Windows.Forms.ToolStripMenuItem deleteFieldMenu;
+        private System.Windows.Forms.ToolStripMenuItem removeItemMenu;
+        private System.Windows.Forms.ToolStripMenuItem undoMenu;
+        private System.Windows.Forms.ToolStripMenuItem redoMenu;
     }
 }

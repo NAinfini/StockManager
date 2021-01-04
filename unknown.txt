@@ -1,0 +1,7 @@
+=100,=100,=100,<100
+name,price,description,quantity
+1,1,tada,3
+2,2,rola,4
+4,2,zxca,4
+5,1,dfga,3
+6,2,tita,4

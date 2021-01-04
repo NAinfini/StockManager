@@ -34,6 +34,7 @@ namespace StockManager
             this.dialogCombo = new System.Windows.Forms.ComboBox();
             this.confirmBtn = new FontAwesome.Sharp.IconButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.valueBox = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +64,7 @@ namespace StockManager
             this.dialogCombo.Name = "dialogCombo";
             this.dialogCombo.Size = new System.Drawing.Size(121, 23);
             this.dialogCombo.TabIndex = 6;
-            this.dialogCombo.Text = "Select data type";
+            this.dialogCombo.Text = "Select valve";
             // 
             // confirmBtn
             // 
@@ -71,7 +72,7 @@ namespace StockManager
             this.confirmBtn.IconChar = FontAwesome.Sharp.IconChar.None;
             this.confirmBtn.IconColor = System.Drawing.Color.Black;
             this.confirmBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.confirmBtn.Location = new System.Drawing.Point(179, 193);
+            this.confirmBtn.Location = new System.Drawing.Point(179, 244);
             this.confirmBtn.Name = "confirmBtn";
             this.confirmBtn.Size = new System.Drawing.Size(75, 23);
             this.confirmBtn.TabIndex = 7;
@@ -88,12 +89,20 @@ namespace StockManager
             this.panel1.Size = new System.Drawing.Size(270, 100);
             this.panel1.TabIndex = 8;
             // 
+            // valueBox
+            // 
+            this.valueBox.Location = new System.Drawing.Point(133, 182);
+            this.valueBox.Name = "valueBox";
+            this.valueBox.Size = new System.Drawing.Size(121, 23);
+            this.valueBox.TabIndex = 9;
+            // 
             // dialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(61)))), ((int)(((byte)(0)))), ((int)(((byte)(145)))));
-            this.ClientSize = new System.Drawing.Size(270, 248);
+            this.ClientSize = new System.Drawing.Size(270, 279);
+            this.Controls.Add(this.valueBox);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.confirmBtn);
             this.Controls.Add(this.dialogCombo);
@@ -115,5 +124,6 @@ namespace StockManager
         private System.Windows.Forms.ComboBox dialogCombo;
         private FontAwesome.Sharp.IconButton confirmBtn;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TextBox valueBox;
     }
 }

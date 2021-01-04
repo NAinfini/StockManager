@@ -9,17 +9,15 @@ namespace StockManager
 {
     class itemList
     {
-        List<Type> typeOfField = new List<Type>();
+
+        List<string> valveOfField = new List<string>();
+        List<double> valueOfField = new List<double>();
         List<string> nameOfField = new List<string>();
         List<item> items = new List<item>();
 
 
 
         public itemList() { }
-        public List<Type> getType()
-        {
-            return typeOfField;
-        }
         public List<string> getName()
         {
             return nameOfField;
@@ -28,17 +26,27 @@ namespace StockManager
         {
             return items;
         }
-        public void addName(Type type, string name)
+        public List<string> getValve()
         {
-            if (nameOfField.Count != 0)
+            return valveOfField;
+        }
+        public List<double> getValue()
+        {
+            return valueOfField;
+        }
+        public void addName(string valve,double value,string name)
+        {
+            if (nameOfField.Contains(name))
             {
-                if (nameOfField.Contains(name))
-                {
-                    throw new DuplicateNameException(defaultLanguage.sameName);
-                }
+                throw new DuplicateNameException(defaultLanguage.sameName);
             }
-            typeOfField.Add(type);
-            nameOfField.Add(name);
+            else
+            {
+                nameOfField.Add(name);
+                valveOfField.Add(valve);
+                valueOfField.Add(value);
+            }
+            
 
         }
 
@@ -49,12 +57,16 @@ namespace StockManager
             {
                 throw new ArgumentNullException("ItemDoesntExist");
             }
-            foreach (item tempItem in items)
+            else
             {
-                tempItem.removeField(nameOfField.IndexOf(name));
+                foreach (item tempItem in items)
+                {
+                    tempItem.removeField(nameOfField.IndexOf(name));
+                }
+                nameOfField.Remove(name);
+                valveOfField.RemoveAt(nameOfField.IndexOf(name));
             }
-            typeOfField.RemoveAt(nameOfField.IndexOf(name));
-            nameOfField.Remove(name);
+            
         }
 
         //add item to the end of the list
@@ -67,12 +79,18 @@ namespace StockManager
         //spaws the positon of any two names. also for all items
         public void swap(int index1,int index2)
         {
-            Type tempType = typeOfField[index1];
-            typeOfField[index1] = typeOfField[index2];
-            typeOfField[index2] = tempType;
+            double tempvalue = valueOfField[index1];
+            valueOfField[index1] = valueOfField[index2];
+            valueOfField[index2] = tempvalue;
+
+            string tempvalve = valveOfField[index1];
+            valveOfField[index1] = valveOfField[index2];
+            valveOfField[index2] = tempvalve;
+
             string tempName = nameOfField[index1];
             nameOfField[index1] = nameOfField[index2];
             nameOfField[index2] = tempName;
+
             foreach(item itemInList in items)
             {
                 itemInList.swap(index1, index2);
@@ -85,19 +103,19 @@ namespace StockManager
         {
             try
             {
+                
                 string[] lines = File.ReadAllLines(fileName);
-                string[] types = lines[0].Replace(" ", "").Split(',');
+                string[] valves = lines[0].Replace(" ", "").Split(',');
                 string[] names = lines[1].Replace(" ", "").Split(',');
-                if (names.Length != types.Length)
-                {
-                    return;
-                    //something is wrong with save file number of fields doesnt match
-                }
                 //loading into types and names
-                for(int i = 0; i < types.Length;i++)
+                foreach (string valve in valves)
                 {
-                    typeOfField.Add(Type.GetType(types[i]));
-                    nameOfField.Add(names[i]);
+                    valveOfField.Add(valve[0].ToString());
+                    valueOfField.Add(Convert.ToDouble(valve.Substring(1)));
+                }
+                foreach(string name in names)
+                {
+                    nameOfField.Add(name);
                 }
                 //loading items aiwth their fields then into list
                 for (int i = 2; i < lines.Length; i++)
@@ -106,8 +124,15 @@ namespace StockManager
                     string[] itemValues = lines[i].Replace(" ", "").Split(',');
                     for(int j = 0; j < itemValues.Length; j++)
                     {
-                        dynamic value3 = Convert.ChangeType(itemValues[j], Type.GetType(types[j]));
-                        tempItem.addField(value3);
+                        try
+                        {
+                            double value3 = Convert.ToDouble(itemValues[j]);
+                            tempItem.addField(value3);
+                        }
+                        catch (FormatException e)
+                        {
+                            tempItem.addField(itemValues[j]);
+                        }
                     }
                     items.Add(tempItem);
                 }
@@ -118,10 +143,27 @@ namespace StockManager
             }catch(DirectoryNotFoundException e)
             {
                 Console.WriteLine("directory not found");
+            }catch(IndexOutOfRangeException e)
+            {
+                throw new IndexOutOfRangeException(defaultLanguage.invalidFormat);
             }
             
         }
 
+
+        public void removeItem(item toRemove)
+        {
+            
+            for (int i =0;i<items.Count;i++)
+            {
+                if (items[i].equal(toRemove))
+                {
+                    items.RemoveAt(i);
+                    return;
+                }
+            }
+            throw new ArgumentNullException(defaultLanguage.itemNull);
+        }
 
         //simple method to turn itemlist into a stin
         public string toString()
@@ -129,10 +171,9 @@ namespace StockManager
             try
             {
                 string result = "";
-
-                foreach(Type temp in typeOfField)
+                for(int i = 0; i < valueOfField.Count; i++)
                 {
-                    result = result + temp.ToString() + ",";
+                    result = result + valveOfField[i]+valueOfField[i].ToString() + ",";
                 }
                 result = result.Remove(result.Length - 1);
                 result += "\n";

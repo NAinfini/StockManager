@@ -22,6 +22,8 @@ namespace StockManager
 
         public static readonly string addItemBtn = "Add item";
         public static readonly string addFieldBtn = "Add field";
+        public static readonly string removeItemBtn = "Remove item";
+        public static readonly string removeFieldBtn = "Remove field";
         public static readonly string saveBtn = "Save";
         public static readonly string openFileBtn = "Open";
         //dialog stuff for itemForm
@@ -31,13 +33,19 @@ namespace StockManager
         public static readonly string confirmationDialog = "Confirmaiton";
 
         //dialog stuff for dialogForm
-        public static readonly string typeDialog = "Select data type";
+        public static readonly string valveDialog = "Select valve";
+        public static readonly string lessThan = "Less than";
+        public static readonly string greaterThan = "Greater than";
+        public static readonly string noValve = "No valve";
         public static readonly string stringDialog = "string";
         public static readonly string intDialog = "Int";
         public static readonly string doubleDialog = "double";
-        public static readonly string dialogDescription = "Enter the name of the field here and select data type:";
+        public static readonly string invalidValue = "please enter a valid number";
+        public static readonly string dialogDescription = "Enter the name of the field here and enter valve value";
         public static readonly string sameName = "please enter a different name"; 
         public static readonly string emptyString = "please enter a name for the field";
-        public static readonly string selectFromList = "pelase select a type form list";
+        public static readonly string selectFromList = "pelase select a valve form list";
+        public static readonly string invalidFormat = "Invalid file format";
+        public static readonly string itemNull = "item doesn't exist";
     }
 }
