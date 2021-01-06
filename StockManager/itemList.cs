@@ -96,7 +96,29 @@ namespace StockManager
             items.Add(value);
         }
 
+        public void set(int index,item tempItme, double tempDou)
+        {
+            foreach (item lilItem in items)
+            {
+                if (tempItme.equal(lilItem))
+                {
+                    lilItem.set(index,tempDou);
+                    break;
+                }
+            }
+        }
 
+        public void set(int index,item tempItem, string tempStr)
+        {
+            foreach (item lilItem in items)
+            {
+                if (tempItem.equal(lilItem))
+                {
+                    lilItem.set(index,tempStr);
+                    break;
+                }
+            }
+        }
         //spaws the positon of any two names. also for all items
         public void swap(int index1,int index2)
         {
@@ -175,7 +197,9 @@ namespace StockManager
             
         }
 
+        //set item field of an item
 
+        //remove item form list
         public void removeItem(item toRemove)
         {
             

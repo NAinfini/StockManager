@@ -13,6 +13,7 @@ namespace StockManager
         public string currentFile = "";
         private DataTable dt = new DataTable();
         private itemList items = new itemList();
+        private item itemBeforeEdit;
         private object beforeEdit;
         private int rowIndex=0;
         public itemsForm()
@@ -292,29 +293,8 @@ namespace StockManager
             
         }
 
-        //simple method to update itemlist 
-        private void updateItem(int col,int row,object cellValue)
-        {
-            try
-            {
-                double tempValue = Convert.ToDouble(cellValue);
-                items.getItems()[row].set(col, tempValue);
-                if ((items.getValve()[col].Equals("<") && items.getValue()[col] > tempValue) || (items.getValve()[col].Equals(">") && items.getValue()[col] < tempValue))
-                {
-                    ItemGrid.Rows[row].Cells[col].Style = new DataGridViewCellStyle { ForeColor = Color.Red, BackColor = Color.White };
-                }
-                else
-                {
-                    ItemGrid.Rows[row].Cells[col].Style = new DataGridViewCellStyle { ForeColor = Color.Black, BackColor = Color.White };
-                }
-            }
-            catch (FormatException)
-            {
-                items.getItems()[row].set(col, cellValue.ToString());
-                ItemGrid.Rows[row].Cells[col].Style = new DataGridViewCellStyle { ForeColor = Color.Black, BackColor = Color.White };
-            }
-            
-        }
+        
+
         // set color of all cells based on valve
         private void setCellColor()
         {
@@ -400,6 +380,50 @@ namespace StockManager
             setCellColor();
         }
 
+
+        //simple method to update itemlist 
+        private void updateItem(int col, int row, object cellValue, item tempItem)
+        {
+            try
+            {
+                double tempValue = Convert.ToDouble(cellValue);
+                items.set(col, itemBeforeEdit, tempValue);
+                if ((items.getValve()[col].Equals("<") && items.getValue()[col] > tempValue) || (items.getValve()[col].Equals(">") && items.getValue()[col] < tempValue))
+                {
+                    ItemGrid.Rows[row].Cells[col].Style = new DataGridViewCellStyle { ForeColor = Color.Red, BackColor = Color.White };
+                }
+                else
+                {
+                    ItemGrid.Rows[row].Cells[col].Style = new DataGridViewCellStyle { ForeColor = Color.Black, BackColor = Color.White };
+                }
+            }
+            catch (FormatException)
+            {
+                items.set(col, itemBeforeEdit, cellValue.ToString());
+            }
+        }
+
+        //simple method to keep track of value before a cell is edited
+
+        private void ItemGrid_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            itemBeforeEdit = new item();
+            foreach (DataGridViewCell cell in ItemGrid.Rows[e.RowIndex].Cells)
+            {
+                try
+                {
+                    double tempDou = Convert.ToDouble(cell.Value.ToString());
+                    itemBeforeEdit.addField(tempDou);
+                }
+                catch (FormatException)
+                {
+                    itemBeforeEdit.addField(cell.Value.ToString());
+                }
+            }
+            beforeEdit = ItemGrid.CurrentCell.Value;
+        }
+
+
         //simple function to update itemlist after cell is edited
 
         private void ItemGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -407,15 +431,10 @@ namespace StockManager
             int col = ItemGrid.CurrentCell.ColumnIndex;
             int row = ItemGrid.CurrentCell.RowIndex;
             object cellValue = ItemGrid.CurrentCell.Value;
-            updateItem(col, row, cellValue);
+            updateItem(col, row, cellValue,itemBeforeEdit);
         }
 
-        //simple method to keep track of value before a cell is edited
-
-        private void ItemGrid_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
-        {
-            beforeEdit = ItemGrid.CurrentCell.Value;
-        }
+       
 
         
         
@@ -458,9 +477,17 @@ namespace StockManager
             {
                 this.ItemGrid.CurrentCell = this.ItemGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
                 itemGridMenu.Items.Remove(removeItemMenu);
-            }else if(ItemGrid.SelectedRows.Count >=1)
+            }else if(e.Button == MouseButtons.Right && ItemGrid.SelectedRows.Count >=1)
             {
                 itemGridMenu.Items.Remove(deleteFieldMenu);
+            }else if(e.Button == MouseButtons.Right && e.ColumnIndex < 0)
+            {
+                itemGridMenu.Items.Remove(deleteFieldMenu);
+                itemGridMenu.Items.Remove(removeItemMenu);
+            }else if (e.Button == MouseButtons.Right && e.RowIndex < 0)
+            {
+                itemGridMenu.Items.Remove(deleteFieldMenu);
+                itemGridMenu.Items.Remove(removeItemMenu);
             }
         }
 
