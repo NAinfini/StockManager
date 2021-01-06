@@ -1,7 +1,8 @@
-=100,=100,=100,<100
-name,price,description,quantity
-1,1,tada,3
-2,2,rola,4
-4,2,zxca,4
-5,1,dfga,3
-6,2,tita,4
+=100,=100,=100,<100,<30,>20
+name,desc,price,quantity,<30,>20
+1,tada,1,3,0,0
+2,rola,2,4,0,0
+3,asd,1,3,0,0
+4,zxca,2,4,35,25
+5,dfga,1,3,35,25
+6,tita,2,4,35,25

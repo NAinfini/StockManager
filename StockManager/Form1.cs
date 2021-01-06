@@ -149,6 +149,16 @@ namespace StockManager
 
         private void exitButton_Click(object sender, EventArgs e)
         {
+            if (activeForm != null)
+            {
+                if (activeForm.GetType().Equals(typeof(itemsForm)))
+                {
+                    itemsForm tempForm = (itemsForm)activeForm;
+                    tempForm.saveFileOnClose();
+                }
+            }
+            
+            
             Application.Exit();
         }
 

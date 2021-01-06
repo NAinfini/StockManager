@@ -25,6 +25,8 @@ namespace StockManager
         public static readonly string removeItemBtn = "Remove item";
         public static readonly string removeFieldBtn = "Remove field";
         public static readonly string saveBtn = "Save";
+        public static readonly string saveAsBtn = "Save as";
+
         public static readonly string openFileBtn = "Open";
         //dialog stuff for itemForm
         public static readonly string youEntered = "you entered: \"";
@@ -47,5 +49,9 @@ namespace StockManager
         public static readonly string selectFromList = "pelase select a valve form list";
         public static readonly string invalidFormat = "Invalid file format";
         public static readonly string itemNull = "item doesn't exist";
+        public static readonly string removeFields = "Are you sure you want to remove: ";
+        public static readonly string undoBtn = "undo";
+        public static readonly string redoBtn = "redo";
+
     }
 }

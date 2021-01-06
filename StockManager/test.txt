@@ -1,4 +1,0 @@
-string,string, int, int
-name,description,price,quantity
-what,tada,1,3
-nope,rola,2,4

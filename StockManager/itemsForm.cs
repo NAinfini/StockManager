@@ -10,15 +10,19 @@ namespace StockManager
 {
     public partial class itemsForm : Form
     {
-        private string currentFile = "";
+        public string currentFile = "";
         private DataTable dt = new DataTable();
         private itemList items = new itemList();
         private object beforeEdit;
         private int rowIndex=0;
         public itemsForm()
         {
+            
             InitializeComponent();
+            ItemGrid.ColumnDisplayIndexChanged -= ItemGrid_ColumnDisplayIndexChanged;
+            startUp();
             setText();
+
         }
 
 
@@ -27,26 +31,38 @@ namespace StockManager
         {
             this.Controls.Find("addItemBtn", true).FirstOrDefault().Text = defaultLanguage.addItemBtn;
             this.Controls.Find("addFieldBtn", true).FirstOrDefault().Text = defaultLanguage.addFieldBtn;
+            this.Controls.Find("saveAsBtn", true).FirstOrDefault().Text = defaultLanguage.saveAsBtn;
             this.Controls.Find("saveBtn", true).FirstOrDefault().Text = defaultLanguage.saveBtn;
             this.Controls.Find("openFileBtn", true).FirstOrDefault().Text = defaultLanguage.openFileBtn;
             itemGridMenu.Items[0].Text = defaultLanguage.addItemBtn;
             itemGridMenu.Items[1].Text = defaultLanguage.addFieldBtn;
             itemGridMenu.Items[2].Text = defaultLanguage.removeItemBtn;
             itemGridMenu.Items[3].Text = defaultLanguage.removeFieldBtn;
+            itemGridMenu.Items[4].Text = defaultLanguage.undoBtn;
+            itemGridMenu.Items[5].Text = defaultLanguage.redoBtn;
+            itemGridMenu.Items[6].Text = defaultLanguage.saveBtn;
         }
 
         private void itemsForm_Load(object sender, EventArgs e)
         {
             
-
         }
 
         //save list to prefered file
         private void saveBtn_Click(object sender, EventArgs e)
         {
+            DateTime localDate = DateTime.Now;
+            saveLoadFunctions temp = new saveLoadFunctions();
+            //AppDomain.CurrentDomain.BaseDirectory
+            temp.writeToFile(@"C:\Users\NA infini\source\repos\StockManager\" +"log\\"+ DateTime.UtcNow.ToString("yyyy-MM-dd"), localDate.ToString("HH-mm-ss") + ".txt", items.toString());
+            temp.sortSavedTxt(@"C:\Users\NA infini\source\repos\StockManager\" + "log\\" + DateTime.UtcNow.ToString("yyyy-MM-dd"));
+        }
+
+        private void saveAsBtn_Click(object sender, EventArgs e)
+        {
             if (currentFile == string.Empty)
             {
-                DialogResult res = MessageBox.Show(defaultLanguage.noFileOpened, defaultLanguage.confirmationDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(defaultLanguage.noFileOpened, defaultLanguage.confirmationDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -59,18 +75,14 @@ namespace StockManager
             if (sfdlg.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllText(sfdlg.FileName, items.toString());
-
             }
         }
-
 
         //open file from directory
         private void openFileBtn_Click(object sender, EventArgs e)
         {
             dt = new DataTable();
             items = new itemList();
-            ItemGrid.DataSource = dt;
-            
             //open dialog to find directory to file
             var filePath = string.Empty;
             OpenFileDialog ofd = new OpenFileDialog();
@@ -86,87 +98,35 @@ namespace StockManager
                 try
                 {
                     items.loadFile(filePath);
+                    currentFile = ofd.FileName.ToString();
                 }
                 catch(IndexOutOfRangeException ex)
                 {
                     DialogResult res = MessageBox.Show(ex.ToString(), defaultLanguage.confirmationDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                
-                //get all names set up in datagrid
-                ItemGrid.ColumnDisplayIndexChanged -= ItemGrid_ColumnDisplayIndexChanged;
-                foreach (string field in items.getName())
-                {
-                    dt.Columns.Add(field);
-                }
-                ItemGrid.ColumnDisplayIndexChanged += ItemGrid_ColumnDisplayIndexChanged;
-                //making emty grid for items
-                foreach (item tempItem in items.getItems())
-                {
-                    List<string> toAdd = new List<string>();
-                    foreach(object field in tempItem.getAllFields())
-                    {
-                        toAdd.Add(string.Empty);
-                    }
-                    dt.Rows.Add(toAdd.ToArray());
-                }
-                updateGrid();
+
+                loadFromItems();
             }
-            currentFile = ofd.FileName.ToString();
+
         }
-        private void updateGrid()
+
+        //set up grid when form is opened
+        private void startUp()
         {
-            ItemGrid.Refresh();
-            // add all items to the list
-            List<Entry> indexToSetColor = new List<Entry>();
-            List<Entry> indexToResetColor = new List<Entry>();
-            for (int i=0;i< items.getItems().Count;i++)
+            
+            dt = new DataTable();
+            items = new itemList();
+            saveLoadFunctions temp = new saveLoadFunctions();
+            //AppDomain.CurrentDomain.BaseDirectory
+            currentFile = temp.findLastTxt(temp.findLatestDirc(@"C:\Users\NA infini\source\repos\StockManager\" + "log\\"));
+            if (currentFile != "")
             {
-                for (int j = 0; j < items.getName().Count; j++)
-                {
-                    if (items.getValve()[j].Equals("="))
-                    {
-                        ItemGrid.Rows[i].Cells[j].Value = items.getItems()[i].getAllFields()[j].ToString();
-                    }
-                    else
-                    {
-                        double tempDouble = 0;
-                        try
-                        {
-                            tempDouble = Convert.ToDouble(items.getItems()[i].getAllFields()[j]);
-                            if ((items.getValve()[j].Equals("<")&& items.getValue()[j] > tempDouble) ||(items.getValve()[j].Equals(">")&& items.getValue()[j] < tempDouble))
-                            {
-                                ItemGrid.Rows[i].Cells[j].Value = tempDouble;
-                                Entry tempEntry = new Entry(i, j);
-                                indexToSetColor.Add(tempEntry);
-                            }
-                            else
-                            {
-                                
-                                    Entry tempEntry = new Entry(i, j);
-                                    indexToResetColor.Add(tempEntry);
-                            }
-                        }
-                        catch (FormatException ex)
-                        {
-                            ItemGrid.Rows[i].Cells[j].Value = items.getItems()[i].getAllFields()[j].ToString();
-                        }
-                    }
-
-
-                }
-                
-            }
-            foreach(Entry tempEntry in indexToSetColor)
-            {
-                ItemGrid.Rows[tempEntry.value1].Cells[tempEntry.value2].Style = new DataGridViewCellStyle { ForeColor = Color.Red, BackColor = Color.White };
-            }
-
-            foreach (Entry tempEntry in indexToResetColor)
-            {
-                ItemGrid.Rows[tempEntry.value1].Cells[tempEntry.value2].Style = new DataGridViewCellStyle { ForeColor = Color.Black, BackColor = Color.White };
+                items.loadFile(currentFile);
+                loadFromItems();
             }
         }
+
         // add an item to the list
         private void addItemBtn_Click(object sender, EventArgs e)
         {
@@ -217,7 +177,7 @@ namespace StockManager
                                 double value3 = Convert.ToDouble(tempForm.valueGot);
                                 flag = true;
                             }
-                            catch (FormatException ex)
+                            catch (FormatException)
                             {
                                 DialogResult res = MessageBox.Show(defaultLanguage.invalidValue, defaultLanguage.confirmationDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
@@ -257,18 +217,15 @@ namespace StockManager
                     DialogResult res = MessageBox.Show(exc.ToString(), defaultLanguage.confirmationDialog, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                ItemGrid.ColumnDisplayIndexChanged -= ItemGrid_ColumnDisplayIndexChanged;
                 dt.Columns.Add(nameToAdd);
-                ItemGrid.ColumnDisplayIndexChanged += ItemGrid_ColumnDisplayIndexChanged;
                 //add to datagrid
                 for (int i = 0; i < items.getItems().Count; i++)
                 {
                     int lastColumnIndex = dt.Columns.Count-1;
-                    
                     items.getItems()[i].addField(0);
                     dt.Rows[i][lastColumnIndex] = 0;
                 }
-                updateGrid();
+                setCellColor();
             }
             
         }
@@ -278,28 +235,44 @@ namespace StockManager
             
             if (!this.ItemGrid.Rows[this.rowIndex].IsNewRow)
             {
-                List<int> order = new List<int>();
-                item tempItem = new item();
-                foreach (DataGridViewColumn column in ItemGrid.Columns.OfType<DataGridViewColumn>().OrderBy(x => x.DisplayIndex))
+                
+                foreach (DataGridViewRow row in ItemGrid.SelectedRows)
                 {
-                    order.Add(column.Index);
+                    List<int> order = new List<int>();
+                    item tempItem = new item();
+                    foreach (DataGridViewColumn column in ItemGrid.Columns.OfType<DataGridViewColumn>().OrderBy(x => x.DisplayIndex))
+                    {
+                        order.Add(column.Index);
+                    }
+                    foreach (int num in order)
+                    {
+                        tempItem.addField(ItemGrid.Rows[rowIndex].Cells[num].Value.ToString());
+                    }
+                    this.ItemGrid.Rows.RemoveAt(this.rowIndex);
+                    items.removeItem(tempItem);
                 }
-                foreach (int num in order)
-                {
-                    tempItem.addField(ItemGrid.Rows[rowIndex].Cells[num].Value.ToString());
-                }
-                this.ItemGrid.Rows.RemoveAt(this.rowIndex);
-                items.removeItem(tempItem);
+                
                 ItemGrid.Refresh();
             }
-            
-            
+
+
         }
 
         //remove a field from list(column)
         private void removeFieldBtn_Click(object sender, EventArgs e)
         {
 
+            foreach (DataGridViewCell cell in ItemGrid.SelectedCells)
+            {
+                if(MessageBox.Show(defaultLanguage.removeFields+ItemGrid.Columns[cell.ColumnIndex].Name, defaultLanguage.confirmationDialog
+                    , MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.OK)
+                {
+                    ItemGrid.ColumnDisplayIndexChanged -= ItemGrid_ColumnDisplayIndexChanged;
+                    this.ItemGrid.Columns.Remove(cell.OwningColumn);
+                    items.removeName(cell.OwningColumn.Name);
+                    ItemGrid.ColumnDisplayIndexChanged += ItemGrid_ColumnDisplayIndexChanged;
+                }
+            }
         }
 
         //go to next cell when enter is pressed
@@ -335,12 +308,96 @@ namespace StockManager
                     ItemGrid.Rows[row].Cells[col].Style = new DataGridViewCellStyle { ForeColor = Color.Black, BackColor = Color.White };
                 }
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
                 items.getItems()[row].set(col, cellValue.ToString());
                 ItemGrid.Rows[row].Cells[col].Style = new DataGridViewCellStyle { ForeColor = Color.Black, BackColor = Color.White };
             }
             
+        }
+        // set color of all cells based on valve
+        private void setCellColor()
+        {
+            foreach (DataGridViewRow row in ItemGrid.Rows)
+            {
+                foreach (DataGridViewColumn column in ItemGrid.Columns.OfType<DataGridViewColumn>().OrderBy(x => x.DisplayIndex))
+                {
+                    try
+                    {
+                        double tempDouble = Convert.ToDouble(row.Cells[column.Index].Value.ToString());
+                        if ((items.getValve()[column.DisplayIndex].Equals("<") && tempDouble < items.getValue()[column.DisplayIndex])
+                            || (items.getValve()[column.DisplayIndex].Equals(">") && tempDouble > items.getValue()[column.DisplayIndex]))
+                        {
+                            row.Cells[column.Index].Style = new DataGridViewCellStyle { ForeColor = Color.Red, BackColor = Color.White };
+                        }else
+                        {
+                            row.Cells[column.Index].Style = new DataGridViewCellStyle { ForeColor = Color.Black, BackColor = Color.White };
+                        }
+                    }
+                    catch (FormatException)
+                    {
+                        row.Cells[column.Index].Style = new DataGridViewCellStyle { ForeColor = Color.Black, BackColor = Color.White };
+                    }
+                }
+                
+            }
+        }
+
+        //set cell values based on items
+        private void setCellValue()
+        {
+            foreach (DataGridViewRow row in ItemGrid.Rows)
+            {
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    cell.Value = items.getItems()[row.Index].getAllFields()[cell.ColumnIndex];
+                }
+            }
+        }
+
+
+        //reset context menu strip
+        private void resetGridMenu()
+        {
+            itemGridMenu.Items.Add(addItemMenu);
+            itemGridMenu.Items.Add(addFieldMemu);
+            itemGridMenu.Items.Add(deleteFieldMenu);
+            itemGridMenu.Items.Add(removeItemMenu);
+            itemGridMenu.Items.Add(undoMenu);
+            itemGridMenu.Items.Add(redoMenu);
+        }
+
+        //saves all progress on application close
+        public void saveFileOnClose()
+        {
+            DateTime localDate = DateTime.Now;
+            saveLoadFunctions temp = new saveLoadFunctions();
+            //AppDomain.CurrentDomain.BaseDirectory
+            temp.writeToFile(@"C:\Users\NA infini\source\repos\StockManager\" + "log\\" + DateTime.UtcNow.ToString("yyyy-MM-dd"), localDate.ToString("HH-mm-ss") + ".txt", items.toString());
+            temp.sortFiles(@"C:\Users\NA infini\source\repos\StockManager\" + "log\\" + DateTime.UtcNow.ToString("yyyy-MM-dd"));
+            temp.sortDirectory(@"C:\Users\NA infini\source\repos\StockManager\" + "log\\");
+        }
+
+        //Load grid with items
+        private void loadFromItems()
+        {
+            //get all names set up in datagrid
+            ItemGrid.DataSource = dt;
+            foreach (string field in items.getName())
+            {
+                dt.Columns.Add(field);
+            }
+            //making emty grid for items
+            foreach (item tempItem in items.getItems())
+            {
+                List<string> toAdd = new List<string>();
+                foreach (object field in tempItem.getAllFields())
+                {
+                    toAdd.Add(field.ToString());
+                }
+                dt.Rows.Add(toAdd.ToArray());
+            }
+            setCellColor();
         }
 
         //simple function to update itemlist after cell is edited
@@ -349,11 +406,8 @@ namespace StockManager
         {
             int col = ItemGrid.CurrentCell.ColumnIndex;
             int row = ItemGrid.CurrentCell.RowIndex;
-            
             object cellValue = ItemGrid.CurrentCell.Value;
             updateItem(col, row, cellValue);
- 
-            
         }
 
         //simple method to keep track of value before a cell is edited
@@ -363,7 +417,6 @@ namespace StockManager
             beforeEdit = ItemGrid.CurrentCell.Value;
         }
 
-        
         
         
         //make sure Items is in right order when column display index is changed
@@ -393,18 +446,48 @@ namespace StockManager
                     }
                 }
             }
+
         }
 
 
         //set current cell to cell right clcked on
         private void ItemGrid_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            resetGridMenu();
+            if (e.Button == MouseButtons.Right && ItemGrid.SelectedRows.Count <=0  && e.RowIndex>=0 && e.ColumnIndex>=0)
             {
-                this.ItemGrid.Rows[e.RowIndex].Selected = true;
-                this.rowIndex = e.RowIndex;
-                this.ItemGrid.CurrentCell = this.ItemGrid.Rows[e.RowIndex].Cells[1];
+                this.ItemGrid.CurrentCell = this.ItemGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                itemGridMenu.Items.Remove(removeItemMenu);
+            }else if(ItemGrid.SelectedRows.Count >=1)
+            {
+                itemGridMenu.Items.Remove(deleteFieldMenu);
             }
+        }
+
+
+        //set cell color after reordering rows
+        private void ItemGrid_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            
+            
+        }
+
+       
+
+        private void ItemGrid_MouseDown(object sender, MouseEventArgs e)
+        {
+            ItemGrid.ColumnDisplayIndexChanged += ItemGrid_ColumnDisplayIndexChanged;
+        }
+
+        private void ItemGrid_MouseUp(object sender, MouseEventArgs e)
+        {
+            ItemGrid.ColumnDisplayIndexChanged -= ItemGrid_ColumnDisplayIndexChanged;
+        }
+
+        //setcolor again once grid is sorted
+        private void ItemGrid_Sorted(object sender, EventArgs e)
+        {
+            setCellColor();
         }
     }
 }

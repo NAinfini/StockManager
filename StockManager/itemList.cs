@@ -63,10 +63,31 @@ namespace StockManager
                 {
                     tempItem.removeField(nameOfField.IndexOf(name));
                 }
-                nameOfField.Remove(name);
                 valveOfField.RemoveAt(nameOfField.IndexOf(name));
+                valueOfField.RemoveAt(nameOfField.IndexOf(name));
+                nameOfField.Remove(name);
             }
             
+        }
+        public void removeName(int index)
+        { 
+            foreach (item tempItem in items)
+            {
+                tempItem.removeField(index);
+            }
+            try
+            {
+                nameOfField.RemoveAt(index);
+                valveOfField.RemoveAt(index);
+                valueOfField.RemoveAt(index);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+
+            }
+                
+
+
         }
 
         //add item to the end of the list
@@ -129,23 +150,27 @@ namespace StockManager
                             double value3 = Convert.ToDouble(itemValues[j]);
                             tempItem.addField(value3);
                         }
-                        catch (FormatException e)
+                        catch (FormatException)
                         {
                             tempItem.addField(itemValues[j]);
                         }
                     }
                     items.Add(tempItem);
                 }
-            }catch(FileNotFoundException e)
+            }catch(FileNotFoundException)
             {
                 Console.WriteLine("file not found");
                 return;
-            }catch(DirectoryNotFoundException e)
+            }catch(DirectoryNotFoundException)
             {
                 Console.WriteLine("directory not found");
-            }catch(IndexOutOfRangeException e)
+            }catch(IndexOutOfRangeException)
             {
                 throw new IndexOutOfRangeException(defaultLanguage.invalidFormat);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("wrong format");
             }
             
         }
@@ -166,6 +191,7 @@ namespace StockManager
         }
 
         //simple method to turn itemlist into a stin
+
         public string toString()
         {
             try
