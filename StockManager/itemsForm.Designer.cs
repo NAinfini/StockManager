@@ -42,9 +42,9 @@ namespace StockManager
             this.itemsTopPanel = new System.Windows.Forms.TableLayoutPanel();
             this.addFieldBtn = new FontAwesome.Sharp.IconButton();
             this.addItemBtn = new FontAwesome.Sharp.IconButton();
-            this.saveBtn = new FontAwesome.Sharp.IconButton();
             this.openFileBtn = new FontAwesome.Sharp.IconButton();
             this.saveAsBtn = new FontAwesome.Sharp.IconButton();
+            this.saveBtn = new FontAwesome.Sharp.IconButton();
             ((System.ComponentModel.ISupportInitialize)(this.ItemGrid)).BeginInit();
             this.itemGridMenu.SuspendLayout();
             this.itemsTopPanel.SuspendLayout();
@@ -84,53 +84,56 @@ namespace StockManager
             this.redoMenu,
             this.itemGridSaveMenu});
             this.itemGridMenu.Name = "contextMenuStrip1";
-            this.itemGridMenu.Size = new System.Drawing.Size(138, 158);
+            this.itemGridMenu.Size = new System.Drawing.Size(144, 158);
             // 
             // addItemMenu
             // 
             this.addItemMenu.Name = "addItemMenu";
-            this.addItemMenu.Size = new System.Drawing.Size(137, 22);
+            this.addItemMenu.Size = new System.Drawing.Size(143, 22);
             this.addItemMenu.Text = "Add Item";
             this.addItemMenu.Click += new System.EventHandler(this.addItemBtn_Click);
             // 
             // addFieldMemu
             // 
             this.addFieldMemu.Name = "addFieldMemu";
-            this.addFieldMemu.Size = new System.Drawing.Size(137, 22);
+            this.addFieldMemu.Size = new System.Drawing.Size(143, 22);
             this.addFieldMemu.Text = "Add field";
             this.addFieldMemu.Click += new System.EventHandler(this.addFieldBtn_Click);
             // 
             // removeItemMenu
             // 
             this.removeItemMenu.Name = "removeItemMenu";
-            this.removeItemMenu.Size = new System.Drawing.Size(137, 22);
+            this.removeItemMenu.Size = new System.Drawing.Size(143, 22);
             this.removeItemMenu.Text = "Delete item";
             this.removeItemMenu.Click += new System.EventHandler(this.removeItemBtn_Click);
             // 
             // deleteFieldMenu
             // 
             this.deleteFieldMenu.Name = "deleteFieldMenu";
-            this.deleteFieldMenu.Size = new System.Drawing.Size(137, 22);
+            this.deleteFieldMenu.Size = new System.Drawing.Size(143, 22);
             this.deleteFieldMenu.Text = "Delete field";
             this.deleteFieldMenu.Click += new System.EventHandler(this.removeFieldBtn_Click);
             // 
             // undoMenu
             // 
             this.undoMenu.Name = "undoMenu";
-            this.undoMenu.Size = new System.Drawing.Size(137, 22);
+            this.undoMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.undoMenu.Size = new System.Drawing.Size(143, 22);
             this.undoMenu.Text = "undo";
+            this.undoMenu.Click += new System.EventHandler(this.undoBtn_Click);
             // 
             // redoMenu
             // 
             this.redoMenu.Name = "redoMenu";
-            this.redoMenu.Size = new System.Drawing.Size(137, 22);
+            this.redoMenu.Size = new System.Drawing.Size(143, 22);
             this.redoMenu.Text = "redo";
+            this.redoMenu.Click += new System.EventHandler(this.redoBtn_Click);
             // 
             // itemGridSaveMenu
             // 
             this.itemGridSaveMenu.Name = "itemGridSaveMenu";
             this.itemGridSaveMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.itemGridSaveMenu.Size = new System.Drawing.Size(137, 22);
+            this.itemGridSaveMenu.Size = new System.Drawing.Size(143, 22);
             this.itemGridSaveMenu.Text = "save";
             this.itemGridSaveMenu.Click += new System.EventHandler(this.saveBtn_Click);
             // 
@@ -143,9 +146,9 @@ namespace StockManager
             this.itemsTopPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.itemsTopPanel.Controls.Add(this.addFieldBtn, 1, 0);
             this.itemsTopPanel.Controls.Add(this.addItemBtn, 0, 0);
-            this.itemsTopPanel.Controls.Add(this.saveBtn, 2, 0);
             this.itemsTopPanel.Controls.Add(this.openFileBtn, 3, 0);
             this.itemsTopPanel.Controls.Add(this.saveAsBtn, 0, 1);
+            this.itemsTopPanel.Controls.Add(this.saveBtn, 2, 0);
             this.itemsTopPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.itemsTopPanel.Location = new System.Drawing.Point(0, 0);
             this.itemsTopPanel.Name = "itemsTopPanel";
@@ -181,19 +184,6 @@ namespace StockManager
             this.addItemBtn.UseVisualStyleBackColor = true;
             this.addItemBtn.Click += new System.EventHandler(this.addItemBtn_Click);
             // 
-            // saveBtn
-            // 
-            this.saveBtn.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.saveBtn.IconColor = System.Drawing.Color.Black;
-            this.saveBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.saveBtn.Location = new System.Drawing.Point(365, 3);
-            this.saveBtn.Name = "saveBtn";
-            this.saveBtn.Size = new System.Drawing.Size(75, 23);
-            this.saveBtn.TabIndex = 2;
-            this.saveBtn.Text = "save ";
-            this.saveBtn.UseVisualStyleBackColor = true;
-            this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
-            // 
             // openFileBtn
             // 
             this.openFileBtn.IconChar = FontAwesome.Sharp.IconChar.None;
@@ -219,6 +209,19 @@ namespace StockManager
             this.saveAsBtn.Text = "save as";
             this.saveAsBtn.UseVisualStyleBackColor = true;
             this.saveAsBtn.Click += new System.EventHandler(this.saveAsBtn_Click);
+            // 
+            // saveBtn
+            // 
+            this.saveBtn.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.saveBtn.IconColor = System.Drawing.Color.Black;
+            this.saveBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.saveBtn.Location = new System.Drawing.Point(365, 3);
+            this.saveBtn.Name = "saveBtn";
+            this.saveBtn.Size = new System.Drawing.Size(75, 23);
+            this.saveBtn.TabIndex = 2;
+            this.saveBtn.Text = "save ";
+            this.saveBtn.UseVisualStyleBackColor = true;
+            this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
             // 
             // itemsForm
             // 

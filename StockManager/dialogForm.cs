@@ -29,8 +29,6 @@ namespace StockManager
             dialogCombo.Items.Add(defaultLanguage.greaterThan);
         }
 
-
-
         private void confirmBtn_Click(object sender, EventArgs e)
         {
             nameGot = dialogTextBox.Text.ToString();

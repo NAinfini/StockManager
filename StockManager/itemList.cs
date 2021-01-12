@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Reflection;
-using System.Text;
 
 namespace StockManager
 {
     class itemList
     {
+        #region instance,set get methods
+
 
         List<string> valveOfField = new List<string>();
         List<double> valueOfField = new List<double>();
         List<string> nameOfField = new List<string>();
-        List<item> items = new List<item>();
-
+        List<ArrayList> items = new List<ArrayList>();
 
 
         public itemList() { }
@@ -22,7 +22,7 @@ namespace StockManager
         {
             return nameOfField;
         }
-        public List<item> getItems()
+        public List<ArrayList> getItems()
         {
             return items;
         }
@@ -49,8 +49,22 @@ namespace StockManager
             
 
         }
+        public void set(int fieldIndex, int itemIndex, double tempDou)
+        {
+            items[itemIndex][fieldIndex] = tempDou;
+        }
+        public void set(int fieldIndex, int itemIndex, string tempStr)
+        {
+            items[itemIndex][fieldIndex] = tempStr;
+        }
 
-        //remove an item based on its name
+
+
+        #endregion
+
+
+        #region item list edits
+        //remove a field based on its name
         public void removeName(string name)
         {
             if (!nameOfField.Contains(name))
@@ -59,9 +73,9 @@ namespace StockManager
             }
             else
             {
-                foreach (item tempItem in items)
+                foreach (ArrayList tempItem in items)
                 {
-                    tempItem.removeField(nameOfField.IndexOf(name));
+                    tempItem.RemoveAt(nameOfField.IndexOf(name));
                 }
                 valveOfField.RemoveAt(nameOfField.IndexOf(name));
                 valueOfField.RemoveAt(nameOfField.IndexOf(name));
@@ -69,11 +83,12 @@ namespace StockManager
             }
             
         }
-        public void removeName(int index)
+        //remove a field based on its index
+        public void removeFieldAt(int index)
         { 
-            foreach (item tempItem in items)
+            foreach (ArrayList tempItem in items)
             {
-                tempItem.removeField(index);
+                tempItem.RemoveAt(index);
             }
             try
             {
@@ -89,36 +104,30 @@ namespace StockManager
 
 
         }
+        //remove item form list by id
+        public void removeItemAt(int id)
+        {
+            int toRemove = 0;
+            foreach(ArrayList item in items)
+            {
+                if ((int)item[item.Count - 1] != id)
+                {
+                    toRemove++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            items.RemoveAt(toRemove);
+        }
 
         //add item to the end of the list
-        public void addItem(item value)
+        public void addItem(ArrayList value)
         {
             items.Add(value);
         }
 
-        public void set(int index,item tempItme, double tempDou)
-        {
-            foreach (item lilItem in items)
-            {
-                if (tempItme.equal(lilItem))
-                {
-                    lilItem.set(index,tempDou);
-                    break;
-                }
-            }
-        }
-
-        public void set(int index,item tempItem, string tempStr)
-        {
-            foreach (item lilItem in items)
-            {
-                if (tempItem.equal(lilItem))
-                {
-                    lilItem.set(index,tempStr);
-                    break;
-                }
-            }
-        }
         //spaws the positon of any two names. also for all items
         public void swap(int index1,int index2)
         {
@@ -134,9 +143,11 @@ namespace StockManager
             nameOfField[index1] = nameOfField[index2];
             nameOfField[index2] = tempName;
 
-            foreach(item itemInList in items)
+            foreach(ArrayList itemInList in items)
             {
-                itemInList.swap(index1, index2);
+                object tempObj = itemInList[index1];
+                itemInList[index1] = itemInList[index2];
+                itemInList[index2] = tempObj;
             }
             
         }
@@ -163,20 +174,13 @@ namespace StockManager
                 //loading items aiwth their fields then into list
                 for (int i = 2; i < lines.Length; i++)
                 {
-                    item tempItem = new item();
-                    string[] itemValues = lines[i].Replace(" ", "").Split(',');
+                    ArrayList tempItem = new ArrayList();
+                    string[] itemValues = lines[i].Split(',');
                     for(int j = 0; j < itemValues.Length; j++)
                     {
-                        try
-                        {
-                            double value3 = Convert.ToDouble(itemValues[j]);
-                            tempItem.addField(value3);
-                        }
-                        catch (FormatException)
-                        {
-                            tempItem.addField(itemValues[j]);
-                        }
+                        tempItem.Add(itemValues[j]);
                     }
+                    tempItem.Add(i-2);
                     items.Add(tempItem);
                 }
             }catch(FileNotFoundException)
@@ -194,28 +198,11 @@ namespace StockManager
             {
                 Console.WriteLine("wrong format");
             }
-            
         }
 
-        //set item field of an item
-
-        //remove item form list
-        public void removeItem(item toRemove)
-        {
-            
-            for (int i =0;i<items.Count;i++)
-            {
-                if (items[i].equal(toRemove))
-                {
-                    items.RemoveAt(i);
-                    return;
-                }
-            }
-            throw new ArgumentNullException(defaultLanguage.itemNull);
-        }
+        #endregion
 
         //simple method to turn itemlist into a stin
-
         public string toString()
         {
             try
@@ -233,10 +220,16 @@ namespace StockManager
                 }
                 result = result.Remove(result.Length - 1);
                 result += "\n";
-                foreach (item idItem in items)
+                foreach (ArrayList idItem in items)
                 {
-                    result = result + idItem.toString() + "\n";
+                    for(int i = 0; i < nameOfField.Count; i++)
+                    {
+                        result = result + idItem[i].ToString() + ",";
+                    }
+                    result = result.Remove(result.Length - 1);
+                    result += "\n";
                 }
+                
                 return result;
 
             }

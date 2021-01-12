@@ -2,31 +2,41 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace StockManager
 {
     class saveLoadFunctions
     {
         public string language;
-        
+
+        #region file access
+
 
         //write to save.txt file to save user perfrences
-
-        public void writeToFile(string directory,string fileName,string content)
+        public void writeToFile(string directory,string time,string fileName,string content)
         {
             
             try
             {
-                File.WriteAllText(Path.Combine(directory, fileName), content);
+                File.WriteAllText(Path.Combine(directory, time+fileName + ".txt"), content);
             }
             catch (DirectoryNotFoundException)
             {
                 createDirectory(directory);
-                File.WriteAllText(Path.Combine(directory, fileName), content);
+                File.WriteAllText(Path.Combine(directory, time+fileName + ".txt"), content);
             }
             
         }
 
+        //read user prefernce from file
+        public void readFromFile()
+        {
+
+
+        }
+
+        //create directory when it doesnt exist
         private void createDirectory(string directory)
         {
             if (!Directory.Exists(directory))
@@ -35,80 +45,102 @@ namespace StockManager
             }
             
         }
-        
-        
 
+
+        #endregion
+
+
+        #region sort files on save/close(also related methods)
         //remove extra files up on user exiting application
         public void sortFiles(string directory)
         {
             System.IO.DirectoryInfo di = new DirectoryInfo(directory);
-            List<long> tempList = new List<long>();
+            List<long> times = new List<long>();
+            Dictionary<string, long> filesToKeep = new Dictionary<string, long>();
             foreach (FileInfo file in di.GetFiles()) 
             {
+                string fileName = file.Name.Replace("-", "").Replace(".txt", "").Substring(6);
                 try
                 {
-                    tempList.Add(long.Parse(file.Name.ToString().Replace("-", "").Replace(".txt", "")));
-                }
-                catch(FormatException)
-                {
-                    throw new FormatException("format wrong");
-                }
-                
-            }
-            tempList.Sort();
-            foreach(FileInfo file in di.GetFiles())
-            {
-                if (tempList.Count > 0)
-                {
-                    if (!file.Name.ToString().Replace("-", "").Replace(".txt", "").Equals(tempList[tempList.Count - 1].ToString()))
+                    long timeFromName = long.Parse(file.Name.Replace("-", "").Substring(0, 5));
+                    long timeInDic;
+                    if (filesToKeep.TryGetValue(fileName, out timeInDic))
                     {
-                        file.Delete();
+                        if (timeInDic < timeFromName)
+                        {
+                            filesToKeep[fileName] = timeFromName;
+                            file.Delete();
+                        }
                     }
-                }
-                
-            }
-        }
-
-
-        //sort out saves in a day by hours minutes
-        public void sortSavedTxt(string directory)
-        {
-            System.IO.DirectoryInfo di = new DirectoryInfo(directory);
-            List<long> tempList = new List<long>();
-            foreach (FileInfo file in di.GetFiles())
-            {
-                try
-                {
-                    tempList.Add(long.Parse(file.Name.ToString().Replace("-", "").Replace(".txt", "")));
+                    else
+                    {
+                        filesToKeep.Add(fileName, timeFromName);
+                    }
                 }
                 catch (FormatException)
                 {
                     throw new FormatException("format wrong");
                 }
-
             }
+        }
+
+        //sort out saves in a day by hours minutes
+        public void sortSavedTxt(string directory)
+        {
+            System.IO.DirectoryInfo di = new DirectoryInfo(directory);
+            Dictionary<string, List<string>> filesToSave = new Dictionary<string, List<string>>();
             
-            if (tempList.Count > 50)
+            foreach (FileInfo file in di.GetFiles())
             {
-                tempList.Sort();
-                tempList.RemoveRange(tempList.Count - 51, 50);
-                foreach (FileInfo file in di.GetFiles())
+                List<string> tempList = new List<string>();
+                string nameOfFile = Regex.Replace(file.Name.Replace(".txt", "").Replace("-", ""), @"[\d-]", string.Empty);
+                try
                 {
-                    
-                    foreach (long tempLong in tempList)
+                    long timeFromFile = long.Parse(file.Name.Replace("-", "").Substring(0, 5));
+                    if (filesToSave.TryGetValue(nameOfFile, out tempList))
                     {
-                        if (file.Name.ToString().Replace("-", "").Replace(".txt", "").Equals(tempLong.ToString()))
+                        tempList.Add(file.Name.Substring(0,8));
+                        if (tempList.Count > 50)
                         {
-                            file.Delete();
-                            break;
+                            tempList.Sort();
+                            tempList.RemoveRange(0, tempList.Count - 50);
                         }
                     }
-
+                    else
+                    {
+                        tempList = new List<string>();
+                        tempList.Add(file.Name.Substring(0, 8));
+                        filesToSave.Add(nameOfFile, tempList);
+                    }
+                }
+                catch (FormatException)
+                {
 
                 }
+                
             }
-            
-            
+            List<string> templil = new List<string>();
+            foreach (string name in filesToSave.Keys)
+            {
+                List<string> templia = new List<string>();
+                if (filesToSave.TryGetValue(name, out templia))
+                {
+                    foreach (string time in templia)
+                    {
+                        string tempStr = time + name + ".txt";
+                        templil.Add(tempStr);
+                    }
+                }
+            }
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (!templil.Contains(file.Name))
+                {
+                    file.Delete();
+                }
+            }
+
+
         }
 
         //sort out directory of days, keep only 30 days of data
@@ -129,10 +161,10 @@ namespace StockManager
 
             }
 
-            if (tempList.Count > 30)
+            if (tempList.Count > 5)
             {
                 tempList.Sort();
-                tempList.RemoveRange(tempList.Count - 31, 30);
+                tempList.RemoveRange(0, tempList.Count - 5);
                 foreach (DirectoryInfo dir in di.GetDirectories())
                 {
 
@@ -153,15 +185,20 @@ namespace StockManager
             }
         }
 
+        //return a string of the last directory of the given one
         public string findLatestDirc(string directory)
         {
             System.IO.DirectoryInfo di = new DirectoryInfo(directory);
-            List<long> tempList = new List<long>();
+            string lastDir = di.GetDirectories()[0].Name;
             foreach (DirectoryInfo dir in di.GetDirectories())
             {
                 try
                 {
-                    tempList.Add(long.Parse(dir.Name.ToString().Replace("-", "").Replace("_", "")));
+                    long tempLong = long.Parse(dir.Name.Replace("-", ""));
+                    if (tempLong > long.Parse(lastDir.Replace("-", "")))
+                    {
+                        lastDir = dir.Name;
+                    }
                 }
                 catch (FormatException)
                 {
@@ -169,36 +206,26 @@ namespace StockManager
                 }
 
             }
-
-            if (tempList.Count >= 1)
-            {
-                tempList.Sort();
-                foreach (DirectoryInfo dir in di.GetDirectories())
-                {
-                    if (dir.Name.ToString().Replace("-", "").Replace("_", "").Equals(tempList[tempList.Count-1].ToString()))
-                    {
-                        if (dir.GetFiles().Length >= 1)
-                        {
-                            return directory +"\\" +dir.Name.ToString();
-                        }
-                        
-                    }
-
-                }
-            }
-            return "";
+            return lastDir+"\\";
         }
+
+        //return a string of the last txt file of the gien directory
         public string findLastTxt(string directory)
         {
+            string lastTxt;
             try
             {
                 System.IO.DirectoryInfo di = new DirectoryInfo(directory);
-                List<long> tempList = new List<long>();
+                lastTxt = di.GetFiles()[0].Name;
                 foreach (FileInfo file in di.GetFiles())
                 {
                     try
                     {
-                        tempList.Add(long.Parse(file.Name.ToString().Replace("-", "").Replace(".txt", "")));
+                        long tempLong = long.Parse(file.Name.ToString().Replace("-", "").Substring(0,5));
+                        if(tempLong>long.Parse(lastTxt.Replace("-", "").Substring(0, 5)))
+                        {
+                            lastTxt = file.Name;
+                        }
                     }
                     catch (FormatException)
                     {
@@ -206,38 +233,23 @@ namespace StockManager
                     }
 
                 }
-                if (tempList.Count >= 1)
-                {
-                    tempList.Sort();
-                    foreach (FileInfo file in di.GetFiles())
-                    {
-
-                        if (file.Name.ToString().Replace("-", "").Replace(".txt", "").Equals(tempList[tempList.Count - 1].ToString()))
-                        {
-                            return directory + "\\" + file.Name.ToString();
-                        }
-
-
-                    }
-                }
-                return "";
+                return lastTxt;
             }
             catch (ArgumentException)
             {
-
+                return "";
             }
-            return "";
+            
             
             
             
         }
 
-        //read user prefernce from file
-        public void readFromFile()
-        {
+        #endregion
 
 
-        }
+        #region setting access
+
 
         //turn all settings to string
         private string settingsToString()
@@ -265,5 +277,8 @@ namespace StockManager
             
             
         }
+
+
+        #endregion
     }
 }
