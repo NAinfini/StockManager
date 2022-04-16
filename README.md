@@ -1,2 +1,2 @@
 # StockManager
-A simple software to track stck for markets
+A simple software used to track inventory for a supermarket, Hobby project.
